@@ -144,59 +144,110 @@ window.sendWhatsApp = sendWhatsApp;
   io.observe(body);
 })();
 
-// ===== Hero Neural Canvas (subtle particle network) =====
+// ===== Hero Neural Canvas — dots, lines, triangles, pulses (rust/concrete palette) =====
 (function () {
   const canvas = document.getElementById('heroNeuralCanvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
-  let w, h, points;
-  const NUM = 60;
-  const MAX_DIST = 140;
+  const dpr = window.devicePixelRatio || 1;
+  let w, h, nodes = [], pulses = [];
+  const DENSITY = 14000;
+  const MAX_DIST_BASE = 170;
+  const TRI_DIST = 140;
 
   function resize() {
-    w = canvas.width = canvas.offsetWidth * window.devicePixelRatio;
-    h = canvas.height = canvas.offsetHeight * window.devicePixelRatio;
-    ctx.scale(1, 1);
-    points = Array.from({ length: NUM }, () => ({
-      x: Math.random() * w,
-      y: Math.random() * h,
-      vx: (Math.random() - 0.5) * 0.3,
-      vy: (Math.random() - 0.5) * 0.3
-    }));
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = rect.height * dpr;
+    canvas.style.width = rect.width + 'px';
+    canvas.style.height = rect.height + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    w = rect.width; h = rect.height;
   }
+  function init() {
+    resize();
+    const count = Math.max(15, Math.round((w * h) / DENSITY));
+    nodes = [];
+    for (let i = 0; i < count; i++) {
+      nodes.push({
+        x: Math.random() * w, y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.35, vy: (Math.random() - 0.5) * 0.35,
+        r: Math.random() * 1.3 + 0.8
+      });
+    }
+  }
+  function spawnPulse() {
+    if (nodes.length < 2) return;
+    const a = nodes[Math.floor(Math.random() * nodes.length)];
+    let b = null, bd = Infinity;
+    for (const n of nodes) {
+      if (n === a) continue;
+      const d = Math.hypot(a.x - n.x, a.y - n.y);
+      if (d < MAX_DIST_BASE && d < bd) { bd = d; b = n; }
+    }
+    if (b) pulses.push({ a, b, t: 0, speed: 0.014 + Math.random() * 0.008 });
+  }
+  setInterval(spawnPulse, 450);
   function draw() {
     ctx.clearRect(0, 0, w, h);
-    points.forEach((p) => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0 || p.x > w) p.vx *= -1;
-      if (p.y < 0 || p.y > h) p.vy *= -1;
-    });
-    for (let i = 0; i < points.length; i++) {
-      for (let j = i + 1; j < points.length; j++) {
-        const dx = points[i].x - points[j].x;
-        const dy = points[i].y - points[j].y;
-        const dist = Math.sqrt(dx*dx + dy*dy);
-        if (dist < MAX_DIST) {
-          ctx.strokeStyle = `rgba(179,171,157,${(1 - dist/MAX_DIST) * 0.15})`;
-          ctx.lineWidth = 1;
+    // Triangles
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        for (let k = j + 1; k < nodes.length; k++) {
+          const a = nodes[i], b = nodes[j], c = nodes[k];
+          const d1 = Math.hypot(a.x - b.x, a.y - b.y); if (d1 >= TRI_DIST) continue;
+          const d2 = Math.hypot(b.x - c.x, b.y - c.y); if (d2 >= TRI_DIST) continue;
+          const d3 = Math.hypot(c.x - a.x, c.y - a.y); if (d3 >= TRI_DIST) continue;
+          const avg = (d1 + d2 + d3) / 3;
+          const alpha = 0.05 * (1 - avg / TRI_DIST);
+          ctx.fillStyle = `rgba(194,65,12,${alpha})`;
           ctx.beginPath();
-          ctx.moveTo(points[i].x, points[i].y);
-          ctx.lineTo(points[j].x, points[j].y);
-          ctx.stroke();
+          ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.lineTo(c.x, c.y);
+          ctx.closePath(); ctx.fill();
         }
       }
     }
-    points.forEach((p) => {
-      ctx.fillStyle = 'rgba(179,171,157,0.4)';
+    // Lines
+    for (let i = 0; i < nodes.length; i++) {
+      for (let j = i + 1; j < nodes.length; j++) {
+        const a = nodes[i], b = nodes[j];
+        const d = Math.hypot(a.x - b.x, a.y - b.y);
+        if (d < MAX_DIST_BASE) {
+          ctx.strokeStyle = `rgba(46,43,40,${(1 - d / MAX_DIST_BASE) * 0.20})`;
+          ctx.lineWidth = 0.6;
+          ctx.beginPath(); ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); ctx.stroke();
+        }
+      }
+    }
+    // Dots + movement
+    nodes.forEach((n) => {
+      n.x += n.vx; n.y += n.vy;
+      if (n.x < 0 || n.x > w) n.vx *= -1;
+      if (n.y < 0 || n.y > h) n.vy *= -1;
       ctx.beginPath();
-      ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+      ctx.arc(n.x, n.y, n.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(194,65,12,0.7)';
+      ctx.shadowBlur = 5; ctx.shadowColor = '#C2410C';
       ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+    // Pulses
+    pulses = pulses.filter((p) => p.t <= 1);
+    pulses.forEach((p) => {
+      const x = p.a.x + (p.b.x - p.a.x) * p.t;
+      const y = p.a.y + (p.b.y - p.a.y) * p.t;
+      ctx.beginPath();
+      ctx.arc(x, y, 2.2, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(245,241,235,0.95)';
+      ctx.shadowBlur = 14; ctx.shadowColor = '#C2410C';
+      ctx.fill();
+      ctx.shadowBlur = 0;
+      p.t += p.speed;
     });
     requestAnimationFrame(draw);
   }
-  resize();
-  draw();
-  window.addEventListener('resize', resize);
+  window.addEventListener('resize', init);
+  init(); draw();
 })();
 
 // ===== Year =====
