@@ -15,8 +15,18 @@ const closeBtn = document.getElementById('menuCloseBtn');
 const panel = document.getElementById('mobileMenuPanel');
 const overlay = document.getElementById('mobileOverlay');
 
-function openMenu() { panel.classList.add('open'); overlay.classList.add('open'); }
-function closeMenu() { panel.classList.remove('open'); overlay.classList.remove('open'); }
+function openMenu() {
+  panel.classList.add('open');
+  overlay.classList.add('open');
+  menuBtn?.classList.add('menu-open');
+  document.body.style.overflow = 'hidden';
+}
+function closeMenu() {
+  panel.classList.remove('open');
+  overlay.classList.remove('open');
+  menuBtn?.classList.remove('menu-open');
+  document.body.style.overflow = '';
+}
 
 menuBtn?.addEventListener('click', openMenu);
 closeBtn?.addEventListener('click', closeMenu);
