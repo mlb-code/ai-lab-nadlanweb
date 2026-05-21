@@ -1,3 +1,14 @@
+// ===== Local dev: route portal links to local Vite server =====
+(function () {
+  const isLocal = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+  if (!isLocal) return;
+  const PROD = 'https://urban.ai-lab.co.il/portal/';
+  const LOCAL = 'http://localhost:5175/portal/';
+  document.querySelectorAll('a[href^="' + PROD + '"]').forEach((a) => {
+    a.href = a.href.replace(PROD, LOCAL);
+  });
+})();
+
 // ===== Mobile menu =====
 const menuBtn = document.getElementById('menuBtn');
 const closeBtn = document.getElementById('menuCloseBtn');
