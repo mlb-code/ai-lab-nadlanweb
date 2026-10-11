@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0F0F12">
+  <meta name="robots" content="noindex, nofollow">
+  <title>שאלון הכרות — הכשרת AI למשרד עורכי דין | AI Lab Urban</title>
+  <meta name="description" content="שאלון קצר להבנת הצרכים של המשרד לפני בניית תוכנית הכשרה מותאמת.">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700;800;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #0F0F12; --bg-elev: #17171C; --bg-card: #1F1F26; --bg-side: #08080A;
+      --steel: #8A8A92; --steel-light: #B8B8BE; --steel-dark: #3A3A42;
+      --line: rgba(255,255,255,0.08); --line-strong: rgba(255,255,255,0.18);
+      --brand: #C8C8CE; --brand-glow: #E8E8ED;
+      --ink-100: #EAE6DC; --ink-300: #C5C0B5; --ink-500: #908A80; --ink-700: #5C5650;
+      --cream: #F5F1EB;
+      --oak: #8B5E3C; --oak-light: #B5784A; --oak-deep: #5D3A1F; --oak-glow: #C68A56;
+      --ok: #7FB77E;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'Heebo', system-ui, sans-serif;
+      background: var(--bg); color: var(--ink-100);
+      line-height: 1.6; min-height: 100vh;
+      background-image:
+        radial-gradient(900px 500px at 85% -10%, rgba(139,94,60,0.14), transparent 60%),
+        radial-gradient(700px 400px at 0% 100%, rgba(200,200,206,0.06), transparent 60%);
+      overflow-x: hidden;
+    }
+    a { color: var(--oak-glow); }
+
+    /* ===== Top bar ===== */
+    .topbar {
+      position: sticky; top: 0; z-index: 20;
+      background: rgba(15,15,18,0.86); backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--line);
+    }
+    .topbar-inner {
+      max-width: 820px; margin: 0 auto; padding: 14px 16px;
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    }
+    .logo { font-weight: 900; font-size: 1.15rem; letter-spacing: -0.01em; color: var(--cream); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; }
+    .logo-tag { font-family: 'Space Mono', monospace; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--oak-light); border: 1px solid rgba(181,120,74,0.45); padding: 2px 8px; border-radius: 3px; }
+    .progress-wrap { display: flex; align-items: center; gap: 10px; font-family: 'Space Mono', monospace; font-size: 0.7rem; color: var(--ink-500); letter-spacing: 0.1em; }
+    .progress { width: 120px; height: 4px; background: var(--steel-dark); border-radius: 2px; overflow: hidden; }
+    .progress > i { display: block; height: 100%; width: 0%; background: linear-gradient(90deg, var(--oak-deep), var(--oak-glow)); transition: width 0.3s; }
+
+    /* ===== Layout ===== */
+    .wrap { max-width: 820px; margin: 0 auto; padding: 36px 16px 80px; }
+    .kicker {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: 'Space Mono', monospace; font-size: 0.72rem; font-weight: 700;
+      text-transform: uppercase; letter-spacing: 0.2em; color: var(--oak-light); margin-bottom: 14px;
+    }
+    .kicker::before { content: ""; display: block; width: 28px; height: 1px; background: var(--oak-light); }
+    h1 { font-size: clamp(1.7rem, 4.5vw, 2.6rem); font-weight: 900; line-height: 1.15; letter-spacing: -0.02em; color: var(--cream); margin-bottom: 14px; }
+    .lede { color: var(--ink-300); font-size: 1.05rem; max-width: 620px; }
+    .lede b { color: var(--cream); font-weight: 600; }
+    .meta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+    .chip { font-family: 'Space Mono', monospace; font-size: 0.7rem; letter-spacing: 0.12em; color: var(--ink-300); border: 1px solid var(--line-strong); padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,0.02); }
+
+    /* ===== Sections ===== */
+    .section {
+      margin-top: 28px; background: var(--bg-elev); border: 1px solid var(--line);
+      border-radius: 12px; padding: 28px 26px; position: relative; overflow: hidden;
+    }
+    .section::before { content: ""; position: absolute; inset-inline-start: 0; top: 0; bottom: 0; width: 3px; background: linear-gradient(180deg, var(--oak-glow), var(--oak-deep)); opacity: 0.8; }
+    .section-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
+    .section-num { font-family: 'Space Mono', monospace; font-size: 0.8rem; font-weight: 700; color: var(--oak-light); letter-spacing: 0.1em; }
+    .section h2 { font-size: 1.3rem; font-weight: 800; color: var(--cream); letter-spacing: -0.01em; }
+    .section-sub { color: var(--ink-500); font-size: 0.95rem; margin-bottom: 22px; }
+
+    .q { padding: 18px 0; border-top: 1px solid var(--line); }
+    .q:first-of-type { border-top: 0; }
+    .q-label { display: block; font-weight: 600; font-size: 1.02rem; color: var(--ink-100); margin-bottom: 10px; }
+    .q-label .req { color: var(--oak-glow); margin-inline-start: 4px; }
+    .q-hint { display: block; font-weight: 400; font-size: 0.88rem; color: var(--ink-500); margin-top: 2px; }
+
+    input[type=text], input[type=tel], input[type=email], input[type=number], textarea, select {
+      width: 100%; padding: 13px 15px;
+      background: var(--bg); border: 1px solid var(--line-strong); border-radius: 6px;
+      color: var(--ink-100); font-family: inherit; font-size: 1rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    textarea { min-height: 96px; resize: vertical; line-height: 1.55; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px rgba(200,200,206,0.12); }
+    input::placeholder, textarea::placeholder { color: var(--ink-700); }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .field-sub { margin-top: 10px; }
+
+    /* ===== Options (radio / checkbox as cards) ===== */
+    .opts { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+    .opts.stack { grid-template-columns: 1fr; }
+    .opt { position: relative; display: block; cursor: pointer; }
+    .opt input { position: absolute; opacity: 0; width: 1px; height: 1px; inset-inline-start: 0; top: 0; pointer-events: none; }
+    .opt span { height: 100%;
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 14px; border-radius: 6px;
+      background: var(--bg); border: 1px solid var(--line-strong);
+      color: var(--ink-300); font-size: 0.97rem; line-height: 1.35;
+      transition: border-color 0.15s, background 0.15s, color 0.15s;
+    }
+    .opt span::before {
+      content: ""; flex: 0 0 auto; width: 16px; height: 16px; border-radius: 50%;
+      border: 1.5px solid var(--steel); background: transparent; transition: all 0.15s;
+    }
+    .opt input[type=checkbox] + span::before { border-radius: 4px; }
+    .opt:hover span { border-color: var(--steel-light); color: var(--ink-100); }
+    .opt input:checked + span { border-color: var(--oak-light); background: rgba(139,94,60,0.14); color: var(--cream); }
+    .opt input:checked + span::before { background: var(--oak-glow); border-color: var(--oak-glow); box-shadow: inset 0 0 0 3px var(--bg); }
+    .opt input[type=checkbox]:checked + span::before { box-shadow: none; background: var(--oak-glow) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='none' stroke='%230F0F12' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round' d='M3.5 8.5l3 3 6-7'/%3E%3C/svg%3E") center/12px no-repeat; }
+    .opt input:focus-visible + span { box-shadow: 0 0 0 3px rgba(200,200,206,0.2); }
+    .other-wrap { margin-top: 8px; display: none; }
+    .other-wrap.show { display: block; }
+
+    /* ===== Submit ===== */
+    .submit-box { margin-top: 28px; text-align: center; }
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 17px 38px; font-family: inherit; font-size: 1.05rem; font-weight: 800;
+      border-radius: 6px; cursor: pointer; text-decoration: none;
+      background: linear-gradient(180deg, #B5784A 0%, #8B5E3C 45%, #5D3A1F 100%);
+      color: #F5E6D3; border: 1px solid rgba(255,210,170,0.18);
+      box-shadow: inset 0 1px 0 rgba(255,220,180,0.28), inset 0 -1px 0 rgba(0,0,0,0.35), 0 4px 14px rgba(0,0,0,0.5);
+      transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+      width: 100%; max-width: 420px;
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: inset 0 1px 0 rgba(255,220,180,0.3), 0 8px 24px rgba(0,0,0,0.6), 0 0 24px rgba(198,138,86,0.25); }
+    .btn-primary:disabled { opacity: 0.6; cursor: default; transform: none; }
+    .btn-secondary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 15px 30px; font-family: inherit; font-size: 1rem; font-weight: 700;
+      border-radius: 6px; cursor: pointer; text-decoration: none;
+      background: transparent; color: var(--cream); border: 1px solid var(--line-strong);
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.45); }
+    .submit-note { color: var(--ink-500); font-size: 0.88rem; margin-top: 12px; }
+    .err { display: none; margin: 14px auto 0; max-width: 520px; padding: 12px 16px; border-radius: 6px; background: rgba(200,80,60,0.12); border: 1px solid rgba(200,80,60,0.5); color: #F0B9AE; font-size: 0.95rem; }
+    .err.show { display: block; }
+    .q.invalid .q-label { color: #F0B9AE; }
+    .q.invalid input[type=text], .q.invalid input[type=tel], .q.invalid input[type=number] { border-color: rgba(200,80,60,0.7); }
+
+    /* ===== Success ===== */
+    .success { display: none; margin-top: 40px; text-align: center; padding: 48px 26px; background: var(--bg-elev); border: 1px solid var(--line); border-radius: 12px; }
+    .success.show { display: block; }
+    .success .check { width: 64px; height: 64px; margin: 0 auto 18px; border-radius: 50%; display: grid; place-items: center; background: rgba(127,183,126,0.12); border: 1px solid rgba(127,183,126,0.5); color: var(--ok); font-size: 1.8rem; }
+    .success h2 { font-size: 1.7rem; font-weight: 900; color: var(--cream); margin-bottom: 10px; }
+    .success p { color: var(--ink-300); max-width: 520px; margin: 0 auto 10px; }
+    .success .pro { margin-top: 28px; padding-top: 24px; border-top: 1px solid var(--line); }
+    .success .pro .kicker { justify-content: center; }
+    .success .pro .kicker::before { display: none; }
+
+    footer { text-align: center; color: var(--ink-700); font-size: 0.82rem; padding: 20px 16px 36px; border-top: 1px solid var(--line); background: var(--bg-side); }
+    footer a { color: var(--ink-500); text-decoration: none; }
+
+    @media (max-width: 640px) {
+      .section { padding: 22px 16px; }
+      .grid-2 { grid-template-columns: 1fr; }
+      .opts { grid-template-columns: 1fr; }
+      .progress { width: 80px; }
+      .progress-wrap small { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a class="logo" href="https://urban.ai-lab.co.il/">AI Lab <span class="logo-tag">Urban</span></a>
+    <div class="progress-wrap"><small id="progressText">0%</small><div class="progress"><i id="progressBar"></i></div></div>
+  </div>
+</div>
+
+<main class="wrap">
+  <header>
+    <div class="kicker">שאלון הכרות</div>
+    <h1>הכשרת AI מותאמת למשרד שלכם</h1>
+    <p class="lede">כדי לבנות תוכנית שמדברת על <b>העבודה האמיתית במשרד</b> ולא על AI באופן כללי, אני צריך להבין את הצרכים, הכלים והיעדים. רוב השאלות הן בחירה מרשימה. אין תשובות נכונות או שגויות, ככל שתפרט יותר, התוכנית תהיה מדויקת יותר.</p>
+    <div class="meta-row">
+      <span class="chip">כ-6 דקות</span>
+      <span class="chip">ממלא ראש המחלקה</span>
+      <span class="chip">המידע נשאר ביני לבינכם</span>
+    </div>
+  </header>
+
+  <form id="intakeForm" novalidate>
+    <input type="text" name="website" id="website" tabindex="-1" autocomplete="off" style="position:absolute;opacity:0;height:0;width:0;pointer-events:none" aria-hidden="true">
+
+    <!-- ================= 1. פרטים ================= -->
+    <section class="section" data-section>
+      <div class="section-head"><span class="section-num">01</span><h2>פרטים</h2></div>
+      <p class="section-sub">כדי שאדע עם מי אני מדבר ולאן לחזור.</p>
+
+      <div class="q" data-required>
+        <label class="q-label" for="f_name">שם מלא <span class="req">*</span></label>
+        <input type="text" id="f_name" data-q="שם מלא" placeholder="שם ושם משפחה" autocomplete="name">
+      </div>
+      <div class="q">
+        <div class="grid-2">
+          <div>
+            <label class="q-label" for="f_firm">שם המשרד</label>
+            <input type="text" id="f_firm" data-q="שם המשרד" placeholder="משרד עורכי דין…" autocomplete="organization">
+          </div>
+          <div>
+            <label class="q-label" for="f_role">התפקיד שלך במשרד</label>
+            <input type="text" id="f_role" data-q="תפקיד" placeholder="שותף, ראש מחלקת מקרקעין…" autocomplete="organization-title">
+          </div>
+        </div>
+      </div>
+      <div class="q" data-required>
+        <div class="grid-2">
+          <div>
+            <label class="q-label" for="f_phone">טלפון <span class="req">*</span></label>
+            <input type="tel" id="f_phone" data-q="טלפון" placeholder="050-0000000" autocomplete="tel" inputmode="tel">
+          </div>
+          <div>
+            <label class="q-label" for="f_email">אימייל <span class="q-hint">לשליחת סיכום ותוכנית מוצעת</span></label>
+            <input type="email" id="f_email" data-q="אימייל" placeholder="name@firm.co.il" autocomplete="email" inputmode="email">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 2. המשתתפים ================= -->
+    <section class="section" data-section>
+      <div class="section-head"><span class="section-num">02</span><h2>מי משתתף</h2></div>
+      <p class="section-sub">הרכב הקבוצה קובע את הקצב ואת מבנה השיעור הראשון.</p>
+
+      <div class="q" data-required>
+        <label class="q-label" for="f_count">כמה אנשים ישתתפו בהכשרה? <span class="req">*</span></label>
+        <input type="number" id="f_count" data-q="מספר משתתפים" min="1" max="60" placeholder="לדוגמה: 5" inputmode="numeric" style="max-width:220px">
+      </div>
+
+      <div class="q">
+        <span class="q-label">מי הם המשתתפים? <span class="q-hint">אפשר לסמן כמה</span></span>
+        <div class="opts" data-q="הרכב המשתתפים">
+          <label class="opt"><input type="checkbox" value="עורכי דין ממחלקת מקרקעין / התחדשות עירונית"><span>עורכי דין ממחלקת מקרקעין / התחדשות עירונית</span></label>
+          <label class="opt"><input type="checkbox" value="עורכי דין ממחלקות אחרות"><span>עורכי דין ממחלקות אחרות</span></label>
+          <label class="opt"><input type="checkbox" value="שותפים"><span>שותפים</span></label>
+          <label class="opt"><input type="checkbox" value="מתמחים"><span>מתמחים</span></label>
+          <label class="opt"><input type="checkbox" value="צוות אדמיניסטרטיבי / פרא-ליגל"><span>צוות אדמיניסטרטיבי / פרא-ליגל</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <span class="q-label">במה מחלקת המקרקעין עוסקת בפועל? <span class="q-hint">סמן את כל מה שרלוונטי</span></span>
+        <div class="opts" data-q="תחומי עיסוק המחלקה" data-other>
+          <label class="opt"><input type="checkbox" value="ייצוג דיירים / בעלי זכויות"><span>ייצוג דיירים / בעלי זכויות</span></label>
+          <label class="opt"><input type="checkbox" value="ייצוג יזמים"><span>ייצוג יזמים</span></label>
+          <label class="opt"><input type="checkbox" value="הסכמי פינוי-בינוי"><span>הסכמי פינוי-בינוי</span></label>
+          <label class="opt"><input type="checkbox" value="תמ״א 38 / חיזוק ועיבוי"><span>תמ״א 38 / חיזוק ועיבוי</span></label>
+          <label class="opt"><input type="checkbox" value="תב״ע, ועדות תכנון והתנגדויות"><span>תב״ע, ועדות תכנון והתנגדויות</span></label>
+          <label class="opt"><input type="checkbox" value="מכרזי יזמים ובחירת יזם"><span>מכרזי יזמים ובחירת יזם</span></label>
+          <label class="opt"><input type="checkbox" value="רישום, טאבו, פרצלציה ובתים משותפים"><span>רישום, טאבו, פרצלציה ובתים משותפים</span></label>
+          <label class="opt"><input type="checkbox" value="ליטיגציה בתחום"><span>ליטיגציה בתחום</span></label>
+          <label class="opt"><input type="checkbox" value="עסקאות מקרקעין רגילות (מכר, שכירות)"><span>עסקאות מקרקעין רגילות (מכר, שכירות)</span></label>
+          <label class="opt"><input type="checkbox" value="__other__"><span>אחר</span></label>
+        </div>
+        <div class="other-wrap"><input type="text" placeholder="פרט…" data-other-input></div>
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="f_other_depts">אם משתתפים גם עורכי דין ממחלקות אחרות, באילו תחומים הם עוסקים?</label>
+        <input type="text" id="f_other_depts" data-q="תחומים של מחלקות אחרות" placeholder="מסחרי, ליטיגציה, עבודה, משפחה…">
+      </div>
+    </section>
+
+    <!-- ================= 3. רמה ושימוש ================= -->
+    <section class="section" data-section>
+      <div class="section-head"><span class="section-num">03</span><h2>איפה אתם עומדים היום</h2></div>
+      <p class="section-sub">הרמה הנוכחית והשימוש בפועל, לא מה שהיה רוצים שיהיה.</p>
+
+      <div class="q" data-required>
+        <span class="q-label">איך היית מתאר את רמת המשתתפים ב-AI? <span class="req">*</span></span>
+        <div class="opts stack" data-q="רמת המשתתפים" data-type="radio">
+          <label class="opt"><input type="radio" name="level" value="רובם לא השתמשו כלל"><span>רובם לא השתמשו כלל</span></label>
+          <label class="opt"><input type="radio" name="level" value="שימוש בסיסי מדי פעם (שאלה בצ׳אט, ניסוח מייל)"><span>שימוש בסיסי מדי פעם (שאלה בצ׳אט, ניסוח מייל)</span></label>
+          <label class="opt"><input type="radio" name="level" value="שימוש יומיומי בצ׳אט, בלי שיטה מסודרת"><span>שימוש יומיומי בצ׳אט, בלי שיטה מסודרת</span></label>
+          <label class="opt"><input type="radio" name="level" value="פערים גדולים: חלק מתקדמים, חלק מתחילים"><span>פערים גדולים: חלק מתקדמים, חלק מתחילים</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <span class="q-label">באילו כלי AI משתמשים היום במשרד?</span>
+        <div class="opts" data-q="כלי AI בשימוש" data-other>
+          <label class="opt"><input type="checkbox" value="ChatGPT חינמי"><span>ChatGPT חינמי</span></label>
+          <label class="opt"><input type="checkbox" value="ChatGPT בתשלום"><span>ChatGPT בתשלום</span></label>
+          <label class="opt"><input type="checkbox" value="Claude"><span>Claude</span></label>
+          <label class="opt"><input type="checkbox" value="Gemini"><span>Gemini</span></label>
+          <label class="opt"><input type="checkbox" value="Copilot בתוך Office"><span>Copilot בתוך Office</span></label>
+          <label class="opt"><input type="checkbox" value="כלי AI משפטי ייעודי"><span>כלי AI משפטי ייעודי</span></label>
+          <label class="opt"><input type="checkbox" value="לא משתמשים"><span>לא משתמשים</span></label>
+          <label class="opt"><input type="checkbox" value="__other__"><span>אחר</span></label>
+        </div>
+        <div class="other-wrap"><input type="text" placeholder="איזה כלי?" data-other-input></div>
+      </div>
+
+      <div class="q">
+        <span class="q-label">למה משתמשים ב-AI היום בפועל?</span>
+        <div class="opts" data-q="שימושים נוכחיים">
+          <label class="opt"><input type="checkbox" value="ניסוח מיילים ומכתבים"><span>ניסוח מיילים ומכתבים</span></label>
+          <label class="opt"><input type="checkbox" value="סיכום מסמכים ארוכים"><span>סיכום מסמכים ארוכים</span></label>
+          <label class="opt"><input type="checkbox" value="מחקר משפטי ופסיקה"><span>מחקר משפטי ופסיקה</span></label>
+          <label class="opt"><input type="checkbox" value="טיוטות הסכמים וסעיפים"><span>טיוטות הסכמים וסעיפים</span></label>
+          <label class="opt"><input type="checkbox" value="תרגום"><span>תרגום</span></label>
+          <label class="opt"><input type="checkbox" value="עריכה ובדיקת ניסוח"><span>עריכה ובדיקת ניסוח</span></label>
+          <label class="opt"><input type="checkbox" value="הסבר מושגים לדיירים / לקוחות בשפה פשוטה"><span>הסבר מושגים לדיירים / לקוחות בשפה פשוטה</span></label>
+          <label class="opt"><input type="checkbox" value="לא משתמשים לעבודה"><span>לא משתמשים לעבודה</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <span class="q-label">יש במשרד מדיניות לגבי שימוש ב-AI והזנת מידע של לקוחות?</span>
+        <div class="opts" data-q="מדיניות AI וסודיות" data-type="radio">
+          <label class="opt"><input type="radio" name="policy" value="יש מדיניות כתובה"><span>יש מדיניות כתובה</span></label>
+          <label class="opt"><input type="radio" name="policy" value="יש הנחיה לא רשמית"><span>יש הנחיה לא רשמית</span></label>
+          <label class="opt"><input type="radio" name="policy" value="אין, כל אחד לפי שיקול דעתו"><span>אין, כל אחד לפי שיקול דעתו</span></label>
+          <label class="opt"><input type="radio" name="policy" value="לא יודע"><span>לא יודע</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <span class="q-label">מישהו במשרד כבר בנה משהו עם AI? <span class="q-hint">GPT מותאם, Skill, אוטומציה, טופס חכם</span></span>
+        <div class="opts" data-q="נבנה כבר משהו עם AI" data-type="radio">
+          <label class="opt"><input type="radio" name="built" value="כן"><span>כן</span></label>
+          <label class="opt"><input type="radio" name="built" value="לא"><span>לא</span></label>
+          <label class="opt"><input type="radio" name="built" value="לא יודע"><span>לא יודע</span></label>
+        </div>
+        <div class="field-sub"><input type="text" data-q="מה נבנה" placeholder="אם כן, מה?"></div>
+      </div>
+    </section>
+
+    <!-- ================= 4. תוכנות ועבודה יומיומית ================= -->
+    <section class="section" data-section>
+      <div class="section-head"><span class="section-num">04</span><h2>הכלים והתוכנות שלכם</h2></div>
+      <p class="section-sub">ה-AI צריך להתחבר למה שכבר עובד במשרד, לא להחליף אותו.</p>
+
+      <div class="q">
+        <span class="q-label">על איזו סביבה המשרד עובד?</span>
+        <div class="opts" data-q="סביבת עבודה משרדית" data-type="radio" data-other>
+          <label class="opt"><input type="radio" name="suite" value="Microsoft 365 (Outlook, Word, Excel)"><span>Microsoft 365 (Outlook, Word, Excel)</span></label>
+          <label class="opt"><input type="radio" name="suite" value="Google Workspace (Gmail, Docs, Sheets)"><span>Google Workspace (Gmail, Docs, Sheets)</span></label>
+          <label class="opt"><input type="radio" name="suite" value="שניהם במקביל"><span>שניהם במקביל</span></label>
+          <label class="opt"><input type="radio" name="suite" value="__other__"><span>אחר</span></label>
+        </div>
+        <div class="other-wrap"><input type="text" placeholder="פרט…" data-other-input></div>
+      </div>
+
+      <div class="q">
+        <span class="q-label">טבלאות: אקסל או Google Sheets?</span>
+        <div class="opts" data-q="אקסל או שיטס" data-type="radio">
+          <label class="opt"><input type="radio" name="sheets" value="אקסל"><span>אקסל</span></label>
+          <label class="opt"><input type="radio" name="sheets" value="Google Sheets"><span>Google Sheets</span></label>
+          <label class="opt"><input type="radio" name="sheets" value="שניהם"><span>שניהם</span></label>
+          <label class="opt"><input type="radio" name="sheets" value="כמעט לא עובדים עם טבלאות"><span>כמעט לא עובדים עם טבלאות</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="f_crm">באיזו תוכנת ניהול משרד / CRM אתם משתמשים? <span class="q-hint">לדוגמה: עו״דכנית, Lawyer, פרקליט, Monday, HubSpot. אם אין, כתוב "אין"</span></label>
+        <input type="text" id="f_crm" data-q="תוכנת ניהול משרד / CRM" placeholder="שם התוכנה">
+      </div>
+
+      <div class="q">
+        <span class="q-label">תוכנות ושירותים נוספים ביום-יום</span>
+        <div class="opts" data-q="תוכנות נוספות" data-other>
+          <label class="opt"><input type="checkbox" value="מאגרים משפטיים (נבו, תקדין, דינים)"><span>מאגרים משפטיים (נבו, תקדין, דינים)</span></label>
+          <label class="opt"><input type="checkbox" value="חתימה דיגיטלית (DocuSign, Comsign וכד׳)"><span>חתימה דיגיטלית (DocuSign, Comsign וכד׳)</span></label>
+          <label class="opt"><input type="checkbox" value="אחסון בענן (Drive, Dropbox, SharePoint)"><span>אחסון בענן (Drive, Dropbox, SharePoint)</span></label>
+          <label class="opt"><input type="checkbox" value="וואטסאפ עסקי / קבוצות דיירים"><span>וואטסאפ עסקי / קבוצות דיירים</span></label>
+          <label class="opt"><input type="checkbox" value="תוכנת שעות וחיוב"><span>תוכנת שעות וחיוב</span></label>
+          <label class="opt"><input type="checkbox" value="מערכת ייעודית לניהול דיירים / פרויקטים"><span>מערכת ייעודית לניהול דיירים / פרויקטים</span></label>
+          <label class="opt"><input type="checkbox" value="__other__"><span>אחר</span></label>
+        </div>
+        <div class="other-wrap"><input type="text" placeholder="פרט…" data-other-input></div>
+      </div>
+
+      <div class="q">
+        <span class="q-label">נסחי טאבו: איך עובדים איתם היום?</span>
+        <div class="opts stack" data-q="עבודה עם נסחי טאבו" data-type="radio">
+          <label class="opt"><input type="radio" name="tabu" value="מורידים PDF ומקלידים ידנית לטבלה"><span>מורידים PDF ומקלידים ידנית לטבלה</span></label>
+          <label class="opt"><input type="radio" name="tabu" value="ממירים לאקסל בעזרת כלי או תוכנה"><span>ממירים לאקסל בעזרת כלי או תוכנה</span></label>
+          <label class="opt"><input type="radio" name="tabu" value="קוראים את הנסח ולא מתעדים בטבלה"><span>קוראים את הנסח ולא מתעדים בטבלה</span></label>
+          <label class="opt"><input type="radio" name="tabu" value="לא רלוונטי לעבודה שלנו"><span>לא רלוונטי לעבודה שלנו</span></label>
+        </div>
+        <div class="field-sub"><input type="text" data-q="נסחי טאבו - פירוט" placeholder="אם ממירים: באיזה כלי? ומה הבעיות בדרך?"></div>
+      </div>
+
+      <div class="q">
+        <span class="q-label">איך מנוהל המידע על דיירים / בעלי זכויות בפרויקט?</span>
+        <div class="opts" data-q="ניהול מידע דיירים" data-type="radio">
+          <label class="opt"><input type="radio" name="tenants" value="טבלת אקסל / Sheets"><span>טבלת אקסל / Sheets</span></label>
+          <label class="opt"><input type="radio" name="tenants" value="בתוכנת ניהול המשרד"><span>בתוכנת ניהול המשרד</span></label>
+          <label class="opt"><input type="radio" name="tenants" value="מיילים ותיקיות"><span>מיילים ותיקיות</span></label>
+          <label class="opt"><input type="radio" name="tenants" value="בעיקר וואטסאפ"><span>בעיקר וואטסאפ</span></label>
+          <label class="opt"><input type="radio" name="tenants" value="משולב, בכמה מקומות"><span>משולב, בכמה מקומות</span></label>
+          <label class="opt"><input type="radio" name="tenants" value="לא רלוונטי"><span>לא רלוונטי</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <span class="q-label">איפה נשמרים מסמכי התיק?</span>
+        <div class="opts" data-q="אחסון מסמכי תיק">
+          <label class="opt"><input type="checkbox" value="שרת משרדי"><span>שרת משרדי</span></label>
+          <label class="opt"><input type="checkbox" value="OneDrive / SharePoint"><span>OneDrive / SharePoint</span></label>
+          <label class="opt"><input type="checkbox" value="Google Drive"><span>Google Drive</span></label>
+          <label class="opt"><input type="checkbox" value="Dropbox"><span>Dropbox</span></label>
+          <label class="opt"><input type="checkbox" value="בתוך תוכנת ניהול המשרד"><span>בתוך תוכנת ניהול המשרד</span></label>
+          <label class="opt"><input type="checkbox" value="במייל"><span>במייל</span></label>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= 5. זמן ועומס ================= -->
+    <section class="section" data-section>
+      <div class="section-head"><span class="section-num">05</span><h2>איפה הזמן הולך</h2></div>
+      <p class="section-sub">כאן נמצא הערך האמיתי של ההכשרה.</p>
+
+      <div class="q">
+        <span class="q-label">אילו משימות גוזלות הכי הרבה זמן למחלקה? <span class="q-hint">בחר עד 4</span></span>
+        <div class="opts" data-q="משימות גוזלות זמן" data-max="4">
+          <label class="opt"><input type="checkbox" value="קריאה וסיכום של מסמכים ארוכים"><span>קריאה וסיכום של מסמכים ארוכים</span></label>
+          <label class="opt"><input type="checkbox" value="ניסוח וסקירה של הסכמים"><span>ניסוח וסקירה של הסכמים</span></label>
+          <label class="opt"><input type="checkbox" value="מענה לדיירים ולקוחות"><span>מענה לדיירים ולקוחות</span></label>
+          <label class="opt"><input type="checkbox" value="הכנה לוועדות ופרוטוקולים"><span>הכנה לוועדות ופרוטוקולים</span></label>
+          <label class="opt"><input type="checkbox" value="מכרזים ושאלונים חוזרים"><span>מכרזים ושאלונים חוזרים</span></label>
+          <label class="opt"><input type="checkbox" value="רישום, טאבו ובדיקת זכויות"><span>רישום, טאבו ובדיקת זכויות</span></label>
+          <label class="opt"><input type="checkbox" value="מחקר משפטי ופסיקה"><span>מחקר משפטי ופסיקה</span></label>
+          <label class="opt"><input type="checkbox" value="מעקב אחרי תיקים, משימות וחתימות"><span>מעקב אחרי תיקים, משימות וחתימות</span></label>
+          <label class="opt"><input type="checkbox" value="דיווח שעות וחיוב"><span>דיווח שעות וחיוב</span></label>
+          <label class="opt"><input type="checkbox" value="תיאום פגישות וכנסי דיירים"><span>תיאום פגישות וכנסי דיירים</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <span class="q-label">אילו מסמכים המחלקה מייצרת הכי הרבה?</span>
+        <div class="opts" data-q="מסמכים נפוצים">
+          <label class="opt"><input type="checkbox" value="הסכמים ונספחים"><span>הסכמים ונספחים</span></label>
+          <label class="opt"><input type="checkbox" value="כתבי טענות ובקשות"><span>כתבי טענות ובקשות</span></label>
+          <label class="opt"><input type="checkbox" value="חוות דעת"><span>חוות דעת</span></label>
+          <label class="opt"><input type="checkbox" value="מכתבים לדיירים ולרשויות"><span>מכתבים לדיירים ולרשויות</span></label>
+          <label class="opt"><input type="checkbox" value="מצגות וחומרים לכנסי דיירים"><span>מצגות וחומרים לכנסי דיירים</span></label>
+          <label class="opt"><input type="checkbox" value="סיכומי פגישות וועדות"><span>סיכומי פגישות וועדות</span></label>
+          <label class="opt"><input type="checkbox" value="דוחות סטטוס ללקוחות"><span>דוחות סטטוס ללקוחות</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="f_process">תאר תהליך אחד חוזר שהיית רוצה שייקח רבע מהזמן <span class="q-hint">כמה שורות. למשל: "כל פרויקט חדש אנחנו מקלידים 120 נסחי טאבו לאקסל ובודקים ידנית מי חתם"</span></label>
+        <textarea id="f_process" data-q="תהליך חוזר לקיצור"></textarea>
+      </div>
+    </section>
+
+    <!-- ================= 6. יעדים ================= -->
+    <section class="section" data-section>
+      <div class="section-head"><span class="section-num">06</span><h2>מה רוצים להשיג</h2></div>
+      <p class="section-sub">זה מה שיקבע את מספר השיעורים ואת הסדר שלהם.</p>
+
+      <div class="q" data-required>
+        <span class="q-label">מה המטרה המרכזית של ההכשרה? <span class="req">*</span> <span class="q-hint">בחר עד 3</span></span>
+        <div class="opts" data-q="מטרות ההכשרה" data-max="3">
+          <label class="opt"><input type="checkbox" value="לחסוך זמן בעבודה היומית של כל עורך דין"><span>לחסוך זמן בעבודה היומית של כל עורך דין</span></label>
+          <label class="opt"><input type="checkbox" value="להתמחות בכלי AI לנדל״ן והתחדשות עירונית"><span>להתמחות בכלי AI לנדל״ן והתחדשות עירונית</span></label>
+          <label class="opt"><input type="checkbox" value="שכל הצוות יהיה באותה רמה ובאותה שיטה"><span>שכל הצוות יהיה באותה רמה ובאותה שיטה</span></label>
+          <label class="opt"><input type="checkbox" value="לבנות כלים שעובדים לבד (Skills, אוטומציות, בוט לדיירים)"><span>לבנות כלים שעובדים לבד (Skills, אוטומציות, בוט לדיירים)</span></label>
+          <label class="opt"><input type="checkbox" value="לדעת מה בטוח ומותר מול מידע של לקוחות"><span>לדעת מה בטוח ומותר מול מידע של לקוחות</span></label>
+          <label class="opt"><input type="checkbox" value="יתרון מול לקוחות ומשרדים מתחרים"><span>יתרון מול לקוחות ומשרדים מתחרים</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="f_success">איך תיראה הצלחה חודש אחרי סיום ההכשרה?</label>
+        <textarea id="f_success" data-q="הגדרת הצלחה" placeholder="מה ישתנה בעבודה היומיומית? מה הצוות יעשה אחרת?"></textarea>
+      </div>
+
+      <div class="q">
+        <span class="q-label">מה החשש או המחסום הגדול?</span>
+        <div class="opts" data-q="חששות">
+          <label class="opt"><input type="checkbox" value="סודיות מידע של לקוחות"><span>סודיות מידע של לקוחות</span></label>
+          <label class="opt"><input type="checkbox" value="דיוק ו״הזיות״ של ה-AI"><span>דיוק ו״הזיות״ של ה-AI</span></label>
+          <label class="opt"><input type="checkbox" value="אחריות מקצועית ואתיקה"><span>אחריות מקצועית ואתיקה</span></label>
+          <label class="opt"><input type="checkbox" value="התנגדות של עורכי דין ותיקים"><span>התנגדות של עורכי דין ותיקים</span></label>
+          <label class="opt"><input type="checkbox" value="אין זמן ללמוד ולהתרגל"><span>אין זמן ללמוד ולהתרגל</span></label>
+          <label class="opt"><input type="checkbox" value="שזה יישאר בתיאוריה ולא ייכנס לעבודה"><span>שזה יישאר בתיאוריה ולא ייכנס לעבודה</span></label>
+          <label class="opt"><input type="checkbox" value="אין חשש מיוחד"><span>אין חשש מיוחד</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <span class="q-label">איזה סגנון לימוד מתאים לצוות?</span>
+        <div class="opts stack" data-q="סגנון לימוד" data-type="radio">
+          <label class="opt"><input type="radio" name="style" value="פרקטי: עובדים על מסמכים ותיקים אמיתיים שלנו (מושחרים)"><span>פרקטי: עובדים על מסמכים ותיקים אמיתיים שלנו (מושחרים)</span></label>
+          <label class="opt"><input type="radio" name="style" value="מובנה: קודם עיקרון, אחר כך תרגול על דוגמאות"><span>מובנה: קודם עיקרון, אחר כך תרגול על דוגמאות</span></label>
+          <label class="opt"><input type="radio" name="style" value="מעורב"><span>מעורב</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <span class="q-label">תוכלו להעביר מראש דוגמאות מסמכים מהמשרד (מושחרים) כדי שהתרגול יהיה עליהם?</span>
+        <div class="opts" data-q="דוגמאות מסמכים מהמשרד" data-type="radio">
+          <label class="opt"><input type="radio" name="samples" value="כן"><span>כן</span></label>
+          <label class="opt"><input type="radio" name="samples" value="נחליט בהמשך"><span>נחליט בהמשך</span></label>
+          <label class="opt"><input type="radio" name="samples" value="לא"><span>לא</span></label>
+        </div>
+      </div>
+
+      <div class="q">
+        <label class="q-label" for="f_more">משהו נוסף שחשוב שאדע?</label>
+        <textarea id="f_more" data-q="הערות נוספות" placeholder="דגשים, אנשים ספציפיים, רעיונות שכבר עלו במשרד…"></textarea>
+      </div>
+    </section>
+
+    <div class="submit-box">
+      <button type="submit" class="btn-primary" id="submitBtn">שלח את השאלון ←</button>
+      <div class="err" id="errBox"></div>
+      <p class="submit-note">אחרי השליחה אעבור על התשובות ונקבע שיחה קצרה לסגירת מבנה ההכשרה.</p>
+    </div>
+  </form>
+
+  <div class="success" id="success">
+    <div class="check">✓</div>
+    <h2>תודה, השאלון התקבל</h2>
+    <p>אעבור על התשובות ואחזור אליך עם הצעה למבנה הכשרה שמתאים למשרד: מספר השיעורים, הסדר שלהם, והכלים שנבנה יחד בדרך.</p>
+    <p style="color:var(--ink-500);font-size:0.9rem">מאיר לביא · <a href="https://wa.me/972546500795" target="_blank" rel="noopener">054-6500795</a></p>
+    <div class="pro">
+      <div class="kicker">בינתיים</div>
+      <p>מעבר להכשרות, אני בונה לעסקים כלים ואוטומציות שעובדים לבד. מוזמן להתרשם:</p>
+      <a class="btn-secondary" href="https://pro.ai-lab.co.il/" target="_blank" rel="noopener">pro.ai-lab.co.il ←</a>
+    </div>
+  </div>
+</main>
+
+<footer>
+  AI Lab Urban · <a href="https://urban.ai-lab.co.il/">urban.ai-lab.co.il</a> · מאיר לביא
+</footer>
+
+<script>
+(function () {
+  /* כתובת ה-Web App של Apps Script (גיליון + מייל). ריק = שליחה למייל דרך Web3Forms. */
+  const INTAKE_URL = '';
+  const WEB3FORMS_KEY = '9ba5abaf-d501-44db-a33d-d5028c89e0ef';
+
+  const form = document.getElementById('intakeForm');
+  const bar = document.getElementById('progressBar');
+  const barText = document.getElementById('progressText');
+  const errBox = document.getElementById('errBox');
+
+  /* --- "אחר" מציג שדה טקסט --- */
+  document.querySelectorAll('[data-other]').forEach(group => {
+    const wrap = group.parentElement.querySelector('.other-wrap');
+    group.addEventListener('change', () => {
+      const on = [...group.querySelectorAll('input')].some(i => i.checked && i.value === '__other__');
+      wrap.classList.toggle('show', on);
+      if (on) wrap.querySelector('input').focus();
+    });
+  });
+
+  /* --- מגבלת בחירה (בחר עד N) --- */
+  document.querySelectorAll('[data-max]').forEach(group => {
+    const max = +group.dataset.max;
+    group.addEventListener('change', e => {
+      const checked = group.querySelectorAll('input:checked');
+      if (checked.length > max) { e.target.checked = false; flash(group.closest('.q'), 'אפשר לבחור עד ' + max); }
+    });
+  });
+
+  function flash(q, msg) {
+    const old = q.querySelector('.flash'); if (old) old.remove();
+    const el = document.createElement('div'); el.className = 'flash';
+    el.style.cssText = 'margin-top:8px;font-size:0.88rem;color:#F0B9AE';
+    el.textContent = msg; q.appendChild(el); setTimeout(() => el.remove(), 2500);
+  }
+
+  /* --- איסוף תשובות לפי סדר השאלות --- */
+  function collect() {
+    const answers = [];
+    form.querySelectorAll('[data-q]').forEach(el => {
+      const label = el.dataset.q;
+      let val = '';
+      if (el.classList.contains('opts')) {
+        const picked = [...el.querySelectorAll('input:checked')].map(i => {
+          if (i.value === '__other__') {
+            const o = el.parentElement.querySelector('[data-other-input]');
+            return 'אחר: ' + ((o && o.value.trim()) || '');
+          }
+          return i.value;
+        });
+        val = picked.join(' | ');
+      } else {
+        val = (el.value || '').trim();
+      }
+      answers.push({ q: label, a: val });
+    });
+    return answers;
+  }
+
+  /* --- התקדמות --- */
+  function updateProgress() {
+    const answers = collect();
+    const filled = answers.filter(a => a.a).length;
+    const pct = Math.round(filled / answers.length * 100);
+    bar.style.width = pct + '%'; barText.textContent = pct + '%';
+  }
+  form.addEventListener('input', updateProgress);
+  form.addEventListener('change', updateProgress);
+
+  /* --- ולידציה --- */
+  function validate() {
+    let firstBad = null;
+    form.querySelectorAll('.q.invalid').forEach(q => q.classList.remove('invalid'));
+    form.querySelectorAll('[data-required]').forEach(q => {
+      const inputs = q.querySelectorAll('input, textarea');
+      let ok = false;
+      inputs.forEach(i => {
+        if (i.type === 'checkbox' || i.type === 'radio') { if (i.checked) ok = true; }
+        else if (i.value.trim()) ok = true;
+      });
+      const phone = q.querySelector('#f_phone');
+      if (phone && !/^0\d{1,2}[- ]?\d{3}[- ]?\d{4}$/.test(phone.value.trim())) ok = false;
+      if (!ok) { q.classList.add('invalid'); if (!firstBad) firstBad = q; }
+    });
+    return firstBad;
+  }
+
+  /* --- שליחה --- */
+  form.addEventListener('submit', async e => {
+    e.preventDefault();
+    errBox.classList.remove('show');
+    const bad = validate();
+    if (bad) {
+      errBox.textContent = 'נשארו כמה שדות חובה (מסומנים ב-*). טלפון צריך להיות בפורמט 050-0000000.';
+      errBox.classList.add('show');
+      bad.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (document.getElementById('website').value) { showSuccess(); return; } // בוט
+
+    const btn = document.getElementById('submitBtn');
+    const orig = btn.textContent;
+    btn.disabled = true; btn.textContent = 'שולח…';
+
+    const answers = collect();
+    const meta = { source: 'urban.ai-lab.co.il/intake', sentAt: new Date().toISOString(), ua: navigator.userAgent.slice(0, 120) };
+    const name = answers.find(a => a.q === 'שם מלא').a;
+    const firm = answers.find(a => a.q === 'שם המשרד').a;
+
+    try {
+      if (INTAKE_URL) {
+        const res = await fetch(INTAKE_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ answers, meta }) });
+        const json = await res.json(); if (!json.success) throw new Error(json.error || 'שגיאה');
+      } else {
+        const fd = new FormData();
+        fd.append('access_key', WEB3FORMS_KEY);
+        fd.append('subject', 'שאלון הכרות — ' + (firm || name));
+        fd.append('from_name', 'AI Lab Urban — שאלון הכרות למשרדי עו״ד');
+        answers.forEach((a, i) => fd.append(String(i + 1).padStart(2, '0') + '. ' + a.q, a.a || '—'));
+        fd.append('מקור', meta.source);
+        const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
+        const json = await res.json(); if (!json.success) throw new Error(json.message || 'שגיאה');
+      }
+      showSuccess();
+    } catch (err) {
+      btn.disabled = false; btn.textContent = orig;
+      errBox.innerHTML = 'השליחה נכשלה. אפשר לנסות שוב, או <a href="#" id="waFallback">לשלוח את התשובות בוואטסאפ</a>.';
+      errBox.classList.add('show');
+      document.getElementById('waFallback').addEventListener('click', ev => {
+        ev.preventDefault();
+        const txt = 'שאלון הכרות — ' + (firm || name) + '\n\n' + answers.filter(a => a.a).map(a => a.q + ': ' + a.a).join('\n');
+        window.open('https://wa.me/972546500795?text=' + encodeURIComponent(txt), '_blank');
+      });
+    }
+  });
+
+  function showSuccess() {
+    form.style.display = 'none';
+    document.querySelector('header').style.display = 'none';
+    document.getElementById('success').classList.add('show');
+    bar.style.width = '100%'; barText.textContent = '100%';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  updateProgress();
+})();
+</script>
+</body>
+</html>
