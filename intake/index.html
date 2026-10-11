@@ -662,8 +662,8 @@
         fd.append('access_key', WEB3FORMS_KEY);
         fd.append('subject', 'שאלון הכרות — ' + (firm || name));
         fd.append('from_name', 'AI Lab Urban — שאלון הכרות למשרדי עו״ד');
-        answers.forEach((a, i) => fd.append(String(i + 1).padStart(2, '0') + '. ' + a.q, a.a || '—'));
-        fd.append('מקור', meta.source);
+        answers.forEach((a, i) => fd.append('Q' + String(i + 1).padStart(2, '0'), a.q + ' ← ' + (a.a || '—')));
+        fd.append('Source', meta.source);
         const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd });
         const json = await res.json(); if (!json.success) throw new Error(json.message || 'שגיאה');
       }
